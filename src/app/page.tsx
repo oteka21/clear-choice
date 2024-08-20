@@ -1,37 +1,110 @@
-import Link from "next/link";
+"use client";
+import { useState } from "react";
+import { NewItemForm } from "~/components/new-item-fom";
+import { Edit, Plus } from "lucide-react";
+
+const newProFormId = "new_pro_form";
+const newConFormId = "new_con_form";
 
 export default function HomePage() {
+  const [pros, setPros] = useState<string[]>([]);
+  const [cons, setCons] = useState<string[]>([]);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-      <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-        <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-          Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-        </h1>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-          <Link
-            className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-            href="https://create.t3.gg/en/usage/first-steps"
-            target="_blank"
-          >
-            <h3 className="text-2xl font-bold">First Steps →</h3>
-            <div className="text-lg">
-              Just the basics - Everything you need to know to set up your
-              database and authentication.
-            </div>
-          </Link>
-          <Link
-            className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-            href="https://create.t3.gg/en/introduction"
-            target="_blank"
-          >
-            <h3 className="text-2xl font-bold">Documentation →</h3>
-            <div className="text-lg">
-              Learn more about Create T3 App, the libraries it uses, and how to
-              deploy it.
-            </div>
-          </Link>
+    <main className="flex min-h-screen flex-col p-4">
+      <h1 className="mb-4 text-3xl font-bold">Decision Maker Assistant</h1>
+     
+      <div className="flex w-full flex-1">
+        <div className="card h-auto flex-1 place-items-center rounded-box bg-orange-50 p-2">
+          <div className="flex w-full">
+            <h2 className="text-xl font-semibold text-green-500">Pros</h2>
+            <button
+              className="btn btn-primary ml-auto"
+              onClick={() => {
+                const dialog = document.getElementById(
+                  newProFormId,
+                ) as HTMLDialogElement;
+                dialog.showModal();
+              }}
+            >
+              <Plus />
+            </button>
+            <NewItemForm
+              dialogId={newProFormId}
+              title="Enter Pro Details"
+              placeholder="Example: Good battery life"
+              onSubmit={({ value }) => {
+                setPros([...pros, value.charAt(0).toUpperCase() + value.slice(1)]);
+                const dialog = document.getElementById(
+                  newProFormId,
+                ) as HTMLDialogElement;
+                dialog.close();
+              }}
+            />
+          </div>
+          <div className="mt-2 flex w-full flex-col">
+            {pros.map((pro, index) => (
+              <div
+                key={index}
+                className="mb-2 flex w-full items-center justify-between rounded-box bg-green-100 p-2"
+              >
+                <p>{pro}</p>
+                <button className="btn btn-ghost">
+                  <Edit />
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
+        <div className="divider divider-horizontal">VS</div>
+        <div className="card h-auto flex-1 place-items-center rounded-box bg-orange-50 p-2">
+          <div className="flex w-full">
+            <h2 className="text-xl font-semibold text-red-600">Cons</h2>
+            <button
+              className="btn btn-primary ml-auto"
+              onClick={() => {
+                const dialog = document.getElementById(
+                  newConFormId,
+                ) as HTMLDialogElement;
+                dialog.showModal();
+              }}
+            >
+              <Plus />
+            </button>
+            <NewItemForm
+              dialogId={newConFormId}
+              title="Enter Con Details"
+              placeholder="example: Bad battery life"
+              onSubmit={({ value }) => {
+                setCons([...cons, value.charAt(0).toUpperCase() + value.slice(1)]);
+                const dialog = document.getElementById(
+                  newConFormId,
+                ) as HTMLDialogElement;
+                dialog.close();
+              }}
+            />
+          </div>
+          <div className="mt-2 flex w-full flex-col">
+            {cons.map((con, index) => (
+              <div
+                key={index}
+                className="mb-2 flex w-full items-center justify-between rounded-box bg-red-100 p-2"
+              >
+                <p>{con}</p>
+                <button className="btn btn-ghost">
+                  <Edit />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+       
       </div>
+      <button
+        className="btn btn-primary my-2"
+      >
+        Analize
+      </button>
     </main>
   );
 }
